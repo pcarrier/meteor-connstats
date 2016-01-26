@@ -90,6 +90,10 @@ How many of the last started sessions should be kept and exposed; 64 by default.
 
 How many of the last ended sessions should be kept and exposed; 64 by default.
 
+### `logSessions` (boolean)
+
+Log every session start and end; disabled by default.
+
 ### `secret` (string or undefined)
 
 A secret that needs to be passed in the query string to access the resource;
