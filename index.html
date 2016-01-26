@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>pcarrier:connstats by pcarrier</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>pcarrier:connstats</h1>
+        <p>Hits and DDP monitoring for Meteor apps</p>
+
+        <p class="view"><a href="https://github.com/pcarrier/meteor-connstats">View the Project on GitHub <small>pcarrier/meteor-connstats</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/pcarrier/meteor-connstats/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/pcarrier/meteor-connstats/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/pcarrier/meteor-connstats">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="pcarrierconnstats-hits-and-ddp-monitoring-for-meteor-apps" class="anchor" href="#pcarrierconnstats-hits-and-ddp-monitoring-for-meteor-apps" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>pcarrier:connstats</code>: hits and DDP monitoring for Meteor apps</h1>
+
+<h2>
+<a id="installing" class="anchor" href="#installing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installing</h2>
+
+<p>From your Meteor app, run:</p>
+
+<pre><code>$ meteor add pcarrier:connstats
+</code></pre>
+
+<h2>
+<a id="interface" class="anchor" href="#interface" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Interface</h2>
+
+<p><code>pcarrier:connstats</code> exposes monitoring information about hits and DDP connections
+as JSON over <code>/.well-known/pcarrier/connstats</code>.</p>
+
+<p>Whenever an error occurs, it will set an appropriate status code and respond with a JSON object
+whose only property is <code>"error"</code>.</p>
+
+<p>For example, if a secret is set in the Meteor settings but was not passed in the query string as
+<code>?secret=[...]</code>, it will respond with the status code 403 and the object:</p>
+
+<pre><code>{"error":"secret needed"}
+</code></pre>
+
+<p>If no error occured, it returns a JSON document following this format:</p>
+
+<pre><code>{
+  "hitSamples": [
+    {
+      "ua": "curl/7.43.0",
+      "ip": "192.0.2.1",
+      "host": "example.com",
+      "url": "/hello?world",
+      "ts": "2016-01-01T00:00:00.000Z"
+    },
+    ...
+  ],
+  "activeSessions": [
+    {
+      "ua": "curl/7.43.0",
+      "ip": "192.0.2.1",
+      "started": "2016-01-01T00:00:00.000Z"
+    },
+    ...
+  ],
+  "startedSessions": [
+    {
+      "ua": "curl/7.43.0",
+      "ip": "192.0.2.1",
+      "started": "2016-01-01T00:00:00.000Z"
+    },
+    ...
+  ],
+  "endedSessions": [
+    {
+      "ua": "curl/7.43.0",
+      "ip": "192.0.2.2",
+      "started": "2016-01-01T00:00:01.000Z",
+      "ended":   "2016-01-01T00:00:02.000Z"
+    },
+    ...
+  ]
+}
+</code></pre>
+
+<p>This format is specified in <a href="schema.json">schema.json</a>,
+which follows the IETF draft <a href="https://tools.ietf.org/html/draft-zyp-json-schema-04">draft-zyp-json-schema-04</a>.</p>
+
+<p><code>hitSamples</code> tracks all HTTP and WebSocket requests.
+It uses random replacement, so arbitrarily old hits can be found in the samples
+but recent hits are more likely to be exposed than older hits.</p>
+
+<h2>
+<a id="settings" class="anchor" href="#settings" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Settings</h2>
+
+<pre><code>Meteor.settings.connstats = {
+  trackHosts:      false, // track the Host: header in hitSamples; disabled by default
+  trackURLs:       false, // track URLs in hitSamples; disabled by default
+  hitSamples:      256,   // how many requests should be kept in the sample
+  startedSessions: 64,    // retain the last n started sessions
+  endedSessions:   64,    // retain the last n ended sessions
+  secret: undefined       // a secret that needs to be passed in the query string; disabled by default
+}
+</code></pre>
+
+<h2>
+<a id="notes" class="anchor" href="#notes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Notes</h2>
+
+<ul>
+<li><p>The <code>ip</code> field is determined by reading the first field of the comma-separated <code>X-Forwarded-For</code> header.
+This will break if Meteor is not behind a proxy respecting
+<a href="https://en.wikipedia.org/wiki/X-Forwarded-For">the semantics of this non-standard but widely agreed-upon header</a>.</p></li>
+<li><p>This package abuses the <code>/.well-known/</code> prefix from <a href="https://tools.ietf.org/html/rfc5785#section-3">RFC-5785</a>
+as we have not gone through the registration process yet.</p></li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/pcarrier">pcarrier</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
