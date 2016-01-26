@@ -72,6 +72,7 @@ WebApp.connectHandlers.use((req, res, next) => {
     hitSamples[randBucket()] = {
       ua: req.headers['user-agent'],
       ip: req.headers['x-forwarded-for'],
+      ts: new Date(),
     };
     next();
   }
