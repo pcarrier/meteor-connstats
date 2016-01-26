@@ -19,6 +19,7 @@ const URL = Npm.require('url'),
   connDescr = (conn) => ({
     ua: conn.httpHeaders['user-agent'],
     ip: conn.httpHeaders['x-forwarded-for'],
+    started: new Date(),
   });
 
 WebApp.connectHandlers.use((req, res, next) => {
@@ -54,6 +55,7 @@ Meteor.onConnection(function(conn) {
   append(openedSessions, descr, config.openedSessions);
   conn.onClose(function() {
     delete activeSessions[conn.id];
+    descr.stopped = new Date();
     append(closedSessions, descr, config.closedSessions);
   });
 });

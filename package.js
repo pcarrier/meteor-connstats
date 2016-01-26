@@ -1,7 +1,7 @@
 Package.describe({
   name: 'pcarrier:connstats',
   summary: 'Meteor connection stats',
-  version: '0.0.6',
+  version: '0.0.7',
   documentation: null
 });
 
