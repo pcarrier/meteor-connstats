@@ -105,15 +105,38 @@ but recent hits are more likely to be exposed than older hits.</p>
 <h2>
 <a id="settings" class="anchor" href="#settings" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Settings</h2>
 
-<pre><code>Meteor.settings.connstats = {
-  trackHosts:      false, // track the Host: header in hitSamples; disabled by default
-  trackURLs:       false, // track URLs in hitSamples; disabled by default
-  hitSamples:      256,   // how many requests should be kept in the sample
-  startedSessions: 64,    // retain the last n started sessions
-  endedSessions:   64,    // retain the last n ended sessions
-  secret: undefined       // a secret that needs to be passed in the query string; disabled by default
-}
-</code></pre>
+<p><code>Meteor.settings.connstats</code> can have the following keys:</p>
+
+<h3>
+<a id="trackhosts-boolean" class="anchor" href="#trackhosts-boolean" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>trackHosts</code> (boolean)</h3>
+
+<p>Track the <code>Host:</code> header in hitSamples; disabled by default.</p>
+
+<h3>
+<a id="trackurls-boolean" class="anchor" href="#trackurls-boolean" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>trackURLs</code> (boolean)</h3>
+
+<p>Track URLs in hitSamples; disabled by default.</p>
+
+<h3>
+<a id="hitsamples-integer" class="anchor" href="#hitsamples-integer" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>hitSamples</code> (integer)</h3>
+
+<p>How many hit samples should be kept and exposed; 256 by default.</p>
+
+<h3>
+<a id="startedsessions-integer" class="anchor" href="#startedsessions-integer" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>startedSessions</code> (integer)</h3>
+
+<p>How many of the last started sessions should be kept and exposed; 64 by default.</p>
+
+<h3>
+<a id="endedsessions-integer" class="anchor" href="#endedsessions-integer" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>endedSessions</code> (integer)</h3>
+
+<p>How many of the last ended sessions should be kept and exposed; 64 by default.</p>
+
+<h3>
+<a id="secret-string-or-undefined" class="anchor" href="#secret-string-or-undefined" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>secret</code> (string or undefined)</h3>
+
+<p>A secret that needs to be passed in the query string to access the resource;
+by default the URI is publicly visible.</p>
 
 <h2>
 <a id="notes" class="anchor" href="#notes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Notes</h2>
