@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>pcarrier:connstats by pcarrier</title>
+    <title>connstats by pcarrier</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/github-light.css">
@@ -15,7 +15,7 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1>pcarrier:connstats</h1>
+        <h1>connstats</h1>
         <p>Hits and DDP monitoring for Meteor apps</p>
 
         <p class="view"><a href="https://github.com/pcarrier/meteor-connstats">View the Project on GitHub <small>pcarrier/meteor-connstats</small></a></p>
@@ -29,7 +29,7 @@
       </header>
       <section>
         <h1>
-<a id="pcarrierconnstats-hits-and-ddp-monitoring-for-meteor-apps" class="anchor" href="#pcarrierconnstats-hits-and-ddp-monitoring-for-meteor-apps" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><code>pcarrier:connstats</code>: hits and DDP monitoring for Meteor apps</h1>
+<a id="connstats-hits-and-ddp-monitoring-for-meteor-apps" class="anchor" href="#connstats-hits-and-ddp-monitoring-for-meteor-apps" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>connstats: hits and DDP monitoring for Meteor apps</h1>
 
 <h2>
 <a id="installing" class="anchor" href="#installing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installing</h2>
@@ -42,7 +42,7 @@
 <h2>
 <a id="interface" class="anchor" href="#interface" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Interface</h2>
 
-<p><code>pcarrier:connstats</code> exposes monitoring information about hits and DDP connections
+<p><code>connstats</code> exposes monitoring information about hits and DDP connections
 as JSON over <code>/.well-known/pcarrier/connstats</code>.</p>
 
 <p>Whenever an error occurs, it will set an appropriate status code and respond with a JSON object
@@ -95,7 +95,7 @@ whose only property is <code>"error"</code>.</p>
 }
 </code></pre>
 
-<p>This format is specified in <a href="schema.json">schema.json</a>,
+<p>This format is specified in <a href="https://github.com/pcarrier/meteor-connstats/blob/master/schema.json">schema.json</a>,
 which follows the IETF draft <a href="https://tools.ietf.org/html/draft-zyp-json-schema-04">draft-zyp-json-schema-04</a>.</p>
 
 <p><code>hitSamples</code> tracks all HTTP and WebSocket requests.
