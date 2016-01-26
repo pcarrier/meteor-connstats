@@ -63,7 +63,7 @@ WebApp.connectHandlers.use((req, res, next) => {
     }
 
     res.end(JSON.stringify({
-      hitSamples: _.without(hitSamples, undefined),
+      hitSamples: _.compact(hitSamples),
       activeSessions: _.values(activeSessions),
       openedSessions: openedSessions.entries(),
       closedSessions: closedSessions.entries(),
