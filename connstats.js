@@ -39,8 +39,10 @@ const URL = Npm.require('url'),
     hitSamples:      256,
     startedSessions: 64,
     endedSessions:   64,
+    logSessions:     false,
     secret:          undefined,
   },
+  logPrefix = 'pcarrier:connstats>',
   config = _.extend({}, defaultConfig, Meteor.settings.connstats),
   hitSamples = _.range(config.hitSamples).map(() => undefined),
   startedSessions = new RingArray(config.startedSessions),
@@ -91,11 +93,17 @@ WebApp.connectHandlers.use((req, res, next) => {
 
 Meteor.onConnection(function(conn) {
   const descr = connDescr(conn);
+  if (config.logSessions) {
+    console.log(logPrefix, 'session start', JSON.stringify(descr));
+  }
   activeSessions[conn.id] = descr;
   startedSessions.push(descr);
   conn.onClose(function() {
-    delete activeSessions[conn.id];
     descr.ended = new Date();
+    if (config.logSessions) {
+      console.log(logPrefix, 'session end', JSON.stringify(descr));
+    }
+    delete activeSessions[conn.id];
     endedSessions.push(descr);
   });
 });
