@@ -34,57 +34,68 @@ class RingArray {
 
 const URL = Npm.require('url'),
   defaultConfig = {
-    hitSamples: 1024,
-    openedSessions: 64,
-    closedSessions: 64,
+    trackHosts:      false,
+    trackURLs:       false,
+    hitSamples:      256,
+    startedSessions: 64,
+    endedSessions:   64,
+    secret:          undefined,
   },
-  config = _.extend(defaultConfig, Meteor.settings.connstats),
+  config = _.extend({}, defaultConfig, Meteor.settings.connstats),
   hitSamples = _.range(config.hitSamples).map(() => undefined),
-  openedSessions = new RingArray(config.openedSessions),
-  closedSessions = new RingArray(config.openedSessions),
+  startedSessions = new RingArray(config.startedSessions),
+  endedSessions = new RingArray(config.startedSessions),
   randBucket = () => _.random(config.hitSamples - 1),
   activeSessions = {},
   connDescr = (conn) => ({
     ua: conn.httpHeaders['user-agent'],
-    ip: conn.httpHeaders['x-forwarded-for'],
+    ip: conn.httpHeaders['x-forwarded-for'].split(',')[0],
     started: new Date(),
   });
 
 WebApp.connectHandlers.use((req, res, next) => {
-  if (req.url.indexOf('/.well-known/pcarrier/connstats') === 0) {
-    res.setHeader('Content-Type', 'application/json');
-
-    if (typeof config.secret !== 'undefined') {
-      const query = URL.parse(req.url, true).query;
-      if (config.secret !== query.secret) {
-        res.statusCode = 403;
-        return res.end(JSON.stringify({error:"secret needed"}));
-      }
-    }
-
-    res.end(JSON.stringify({
-      hitSamples: _.compact(hitSamples),
-      activeSessions: _.values(activeSessions),
-      openedSessions: openedSessions.entries(),
-      closedSessions: closedSessions.entries(),
-    }));
-  } else {
-    hitSamples[randBucket()] = {
-      ua: req.headers['user-agent'],
-      ip: req.headers['x-forwarded-for'],
-      ts: new Date(),
-    };
-    next();
+  const hit = {
+    ua: req.headers['user-agent'],
+    ip: req.headers['x-forwarded-for'].split(',')[0],
+    ts: new Date(),
+  };
+  if (config.trackURLs) {
+    hit.url = req.url;
   }
+  if (config.trackHosts) {
+    hit.host = req.headers['host'];
+  }
+  hitSamples[randBucket()] = hit;
+
+  if (req.url.indexOf('/.well-known/pcarrier/connstats') !== 0) {
+    return next();
+  }
+
+  res.setHeader('Content-Type', 'application/json');
+
+  if (typeof config.secret !== 'undefined') {
+    const query = URL.parse(req.url, true).query;
+    if (config.secret !== query.secret) {
+      res.statusCode = 403;
+      return res.end(JSON.stringify({error:"secret needed"}));
+    }
+  }
+
+  res.end(JSON.stringify({
+    hitSamples: _.compact(hitSamples),
+    activeSessions: _.values(activeSessions),
+    startedSessions: startedSessions.entries(),
+    endedSessions: endedSessions.entries(),
+  }));
 });
 
 Meteor.onConnection(function(conn) {
   const descr = connDescr(conn);
   activeSessions[conn.id] = descr;
-  openedSessions.push(descr);
+  startedSessions.push(descr);
   conn.onClose(function() {
     delete activeSessions[conn.id];
-    descr.stopped = new Date();
-    closedSessions.push(descr);
+    descr.ended = new Date();
+    endedSessions.push(descr);
   });
 });
